@@ -8,6 +8,10 @@ from moviepy.editor import *
 
 
 def stft(sig, frameSize, overlapFac=0.5, window=np.hanning):
+    if type(frameSize) == type((1,)):
+      frameSize = frameSize[0]
+      
+    print(type(frameSize), frameSize)
     win = window(frameSize)
     hopSize = int(frameSize - np.floor(overlapFac * frameSize))
 
@@ -103,7 +107,11 @@ def plotStft(audiopath, binsize=2**10, plotpath=None, colormap="jet"):
 
 
 def plotStftFromMovie(audiopath, binsize=2**10, plotpath=None, colormap="jet"):
-    samplerate, samples = wav.read(audiopath)
+#     samplerate, samples = wav.read(audiopath)
+    
+    videoclip = VideoFileClip("sample-mp4-file.mp4")
+    samples = videoclip.audio.to_soundarray().mean(axis=-1)
+    samplerate = videoclip.audio.fps
 
     s = stft(samples, binsize)
 
